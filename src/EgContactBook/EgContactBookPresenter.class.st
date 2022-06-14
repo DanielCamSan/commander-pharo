@@ -68,6 +68,27 @@ EgContactBookPresenter class >> defaultLayout [
 		  yourself
 ]
 
+{ #category : #layout }
+EgContactBookPresenter class >> extraCommandsWith: presenter forRootGroup: aRootCommandsGroup [
+
+	<extensionCommands>
+	aRootCommandsGroup / 'Context Menu' register:
+		((CmCommandGroup named: 'Extra') asSpecGroup
+			 description: 'Extra commands to help during development.';
+			 register:
+				 ((EgInspectCommand forSpec context: [ presenter selectedContact ])
+					  name: 'Inspect contact';
+					  description: 'Open an inspector on the selected contact.';
+					  iconName: #smallFind;
+					  yourself);
+			 register:
+				 ((EgInspectCommand forSpec context: [ presenter contactBook ])
+					  name: 'Inspect contact book';
+					  description: 'Open an inspector on the contact book.';
+					  yourself);
+			 yourself)
+]
+
 { #category : #accessing }
 EgContactBookPresenter >> contactBook [
 
@@ -89,6 +110,13 @@ EgContactBookPresenter >> initializePresenters [
 		addColumn: (SpStringTableColumn title: 'Phone' evaluated: #phone).
 	table contextMenu: [ self rootCommandsGroup  beRoot asMenuPresenter ].
 	table items: contactBook contents
+]
+
+{ #category : #accessing }
+EgContactBookPresenter >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+	self rootCommandsGroup installShortcutsIn: aWindowPresenter
 ]
 
 { #category : #accessing }
