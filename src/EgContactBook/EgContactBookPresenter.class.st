@@ -45,6 +45,14 @@ EgContactBookPresenter class >> buildRemovingGroupWith: presenter [
 ]
 
 { #category : #layout }
+EgContactBookPresenter class >> changePhoneCommandWith: presenter forRootGroup: aRootCommandsGroup [
+
+	<extensionCommands>
+	aRootCommandsGroup / 'Context Menu' register:
+		(EgChangePhoneCommand forSpec context: presenter)
+]
+
+{ #category : #layout }
 EgContactBookPresenter class >> coworkersExample [
 
 	<example>
@@ -107,6 +115,21 @@ and phone (split by comma)' ].
 		  name: splitted first;
 		  phone: splitted second;
 		  yourself
+]
+
+{ #category : #'instance creation' }
+EgContactBookPresenter >> newPhone [
+
+	| phone |
+	phone := self
+		         request: 'New phone for the contact'
+		         initialAnswer: self selectedContact phone
+		         title: 'Set new phone for contact'.
+	(phone matchesRegex: '\d\d\d\s\d\d\d') ifFalse: [ 
+		SpInvalidUserInput signal: 'The phone number is not well
+formated.
+Should match "\d\d\d\s\d\d\d"' ].
+	^ phone
 ]
 
 { #category : #accessing }
