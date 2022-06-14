@@ -5,6 +5,15 @@ Class {
 }
 
 { #category : #initialization }
+EgRemoveContactCommand >> asSpecCommand [
+
+	^ super asSpecCommand
+		  iconName: #removeIcon;
+		  shortcutKey: $x meta;
+		  yourself
+]
+
+{ #category : #initialization }
 EgRemoveContactCommand >> canBeExecuted [
 
 	^ self context isContactSelected

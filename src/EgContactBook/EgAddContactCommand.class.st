@@ -5,6 +5,15 @@ Class {
 }
 
 { #category : #executing }
+EgAddContactCommand >> asSpecCommand [
+
+	^ super asSpecCommand
+		  shortcutKey: $n meta;
+		  iconName: #changeAdd;
+		  yourself
+]
+
+{ #category : #executing }
 EgAddContactCommand >> execute [
 
 	| contact |
