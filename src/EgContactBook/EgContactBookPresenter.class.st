@@ -3,7 +3,8 @@ Class {
 	#superclass : #SpPresenter,
 	#instVars : [
 		'table',
-		'contactBook'
+		'contactBook',
+		'menuBar'
 	],
 	#category : #EgContactBook
 }
@@ -21,8 +22,9 @@ EgContactBookPresenter class >> buildAddingGroupWith: presenter [
 { #category : #layout }
 EgContactBookPresenter class >> buildCommandsGroupWith: presenter forRoot: rootCommandGroup [
 
-	rootCommandGroup register:
-		(self buildContextualMenuGroupWith: presenter)
+	rootCommandGroup
+		register: (self buildMenuBarGroupWith: presenter);
+		register: (self buildContextualMenuGroupWith: presenter)
 ]
 
 { #category : #layout }
@@ -31,6 +33,14 @@ EgContactBookPresenter class >> buildContextualMenuGroupWith: presenter [
 	^ (CmCommandGroup named: 'Context Menu') asSpecGroup
 		  register: (self buildAddingGroupWith: presenter);
 		  register: (self buildRemovingGroupWith: presenter);
+		  yourself
+]
+
+{ #category : #layout }
+EgContactBookPresenter class >> buildMenuBarGroupWith: presenter [
+
+	^ (CmCommandGroup named: 'MenuBar') asSpecGroup
+		  register: (EgPrintContactCommand forSpec context: presenter);
 		  yourself
 ]
 
@@ -64,6 +74,9 @@ EgContactBookPresenter class >> coworkersExample [
 EgContactBookPresenter class >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
+		  add: #menuBar
+		  withConstraints: [ :constraints | 
+			  constraints height: self toolbarHeight ];
 		  add: #table;
 		  yourself
 ]
@@ -108,8 +121,10 @@ EgContactBookPresenter >> initializePresenters [
 	table
 		addColumn: (SpStringTableColumn title: 'Name' evaluated: #name);
 		addColumn: (SpStringTableColumn title: 'Phone' evaluated: #phone).
-	table contextMenu: [ self rootCommandsGroup  beRoot asMenuPresenter ].
-	table items: contactBook contents
+	table contextMenu: [ 
+		(self rootCommandsGroup / 'Context Menu') beRoot asMenuPresenter ].
+	table items: contactBook contents.
+	menuBar := (self rootCommandsGroup / 'MenuBar') asMenuBarPresenter
 ]
 
 { #category : #accessing }
