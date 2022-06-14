@@ -9,10 +9,19 @@ Class {
 }
 
 { #category : #layout }
+EgContactBookPresenter class >> buildCommandsGroupWith: presenter forRoot: rootCommandGroup [
+
+	rootCommandGroup
+		register: (EgAddContactCommand forSpec context: presenter);
+		register: (EgRemoveContactCommand forSpec context: presenter)
+]
+
+{ #category : #layout }
 EgContactBookPresenter class >> coworkersExample [
 
 	<example>
-	^ (self on: EgContactBook coworkers) open presenter inspect
+
+ 	^ (self on: EgContactBook coworkers) open 
 ]
 
 { #category : #layout }
@@ -42,6 +51,8 @@ EgContactBookPresenter >> initializePresenters [
 	table
 		addColumn: (SpStringTableColumn title: 'Name' evaluated: #name);
 		addColumn: (SpStringTableColumn title: 'Phone' evaluated: #phone).
+	table contextMenu: [ self rootCommandsGroup beRoot asMenuPresenter ].
+
 	table items: contactBook contents
 ]
 
@@ -94,4 +105,10 @@ EgContactBookPresenter >> table [
 EgContactBookPresenter >> table: anObject [
 
 	table := anObject
+]
+
+{ #category : #accessing }
+EgContactBookPresenter >> updateView [
+
+	table items: contactBook contacts
 ]
